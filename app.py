@@ -9,6 +9,7 @@ Original file is located at
 
 # Commented out IPython magic to ensure Python compatibility.
 # %matplotlib inline
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -21,11 +22,11 @@ from nltk.tokenize import word_tokenize
 import re
 from nltk.corpus import stopwords
 
-nltk.download('all')
+# nltk.download('all')
 
-df = pd.read_csv('/content/Symptom2Disease.csv')
+df = pd.read_csv('Symptom2Disease.csv')
 
-df1 = pd.read_csv('/content/Final dataset.csv')
+df1 = pd.read_csv('Final dataset.csv')
 df1 = df1.drop(['Symptom_1','Symptom_2','Symptom_3','Symptom_4','Symptom_5','Symptom_6','Symptom_7','Symptom_8','Symptom_9','Symptom_10','Symptom_11','Symptom_12','Symptom_13','Symptom_14','Symptom_15','Symptom_16'],axis=1)
 df1.fillna('0',inplace = True)
 
@@ -93,7 +94,6 @@ for text in df['text'].values:
   new_train_df.append(str_list)
 
 final_train_df = [[" ".join(inner)] for inner in new_train_df]
-print(final_train_df)
 
 df['text'] = [value[0] for value in final_train_df]
 
@@ -111,10 +111,43 @@ X_train,X_test,y_train,y_test = train_test_split(X,y,test_size = 0.2,random_stat
 model.fit(X_train,y_train)
 
 input_str = "" #input goes here
-new_str = remove_punctuation(input_str)
-new_str2 = remove_digits(new_str)
-new_str3 = tokenize(new_str2)
-str_list = remove_stopwords(new_str3)
-merged_string = " ".join(str_list)
-print(model.predict([merged_string]))
 
+
+
+
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/', methods=['GET'])
+def index():
+    data = {
+        "message": "Hello from Flask!",
+        "data": [1, 2, 3, 4, 5]
+    }
+    return jsonify(data)
+
+
+@app.route('/output', methods=['GET'])
+def output():
+
+    content_type = request.headers.get('Content-Type')
+    print(content_type)
+    if (content_type == 'application/json'):
+        print("Coming here!!!")
+        req_data = request.get_json()
+        print(req_data)
+        input_str = req_data["prompt"]
+        new_str = remove_punctuation(input_str)
+        new_str2 = remove_digits(new_str)
+        new_str3 = tokenize(new_str2)
+        str_list = remove_stopwords(new_str3)
+        merged_string = " ".join(str_list)
+    
+        return model.predict([merged_string])[0]
+    else:
+        return "Content type is not supported."
+
+
+if __name__ == '__main__':
+    app.run(port=8000, debug=True)
