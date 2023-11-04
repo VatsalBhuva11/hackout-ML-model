@@ -134,9 +134,7 @@ def output():
     content_type = request.headers.get('Content-Type')
     print(content_type)
     if (content_type == 'application/json'):
-        print("Coming here!!!")
         req_data = request.get_json()
-        print(req_data)
         input_str = req_data["prompt"]
         new_str = remove_punctuation(input_str)
         new_str2 = remove_digits(new_str)
