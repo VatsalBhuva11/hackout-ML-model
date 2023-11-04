@@ -17,12 +17,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score
-import nltk
 from nltk.tokenize import word_tokenize
 import re
 from nltk.corpus import stopwords
 
-# nltk.download('all')
 
 df = pd.read_csv('Symptom2Disease.csv')
 
