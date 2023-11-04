@@ -17,14 +17,16 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import accuracy_score
+import nltk
 from nltk.tokenize import word_tokenize
 import re
 from nltk.corpus import stopwords
 
+nltk.download('all')
 
-# df = pd.read_csv('Symptom2Disease.csv')
+df = pd.read_csv('Symptom2Disease.csv')
 
-# df1 = pd.read_csv('Final dataset.csv')
+df1 = pd.read_csv('Final dataset.csv')
 df1 = df1.drop(['Symptom_1','Symptom_2','Symptom_3','Symptom_4','Symptom_5','Symptom_6','Symptom_7','Symptom_8','Symptom_9','Symptom_10','Symptom_11','Symptom_12','Symptom_13','Symptom_14','Symptom_15','Symptom_16'],axis=1)
 df1.fillna('0',inplace = True)
 
