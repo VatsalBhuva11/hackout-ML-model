@@ -22,29 +22,28 @@ from nltk.tokenize import word_tokenize
 import re
 from nltk.corpus import stopwords
 
-nltk.download('all')
 
-df = pd.read_csv('Symptom2Disease.csv')
+# df = pd.read_csv('Symptom2Disease.csv')
 
-df1 = pd.read_csv('Final dataset.csv')
-df1 = df1.drop(['Symptom_1','Symptom_2','Symptom_3','Symptom_4','Symptom_5','Symptom_6','Symptom_7','Symptom_8','Symptom_9','Symptom_10','Symptom_11','Symptom_12','Symptom_13','Symptom_14','Symptom_15','Symptom_16'],axis=1)
-df1.fillna('0',inplace = True)
+# df1 = pd.read_csv('Final dataset.csv')
+# df1 = df1.drop(['Symptom_1','Symptom_2','Symptom_3','Symptom_4','Symptom_5','Symptom_6','Symptom_7','Symptom_8','Symptom_9','Symptom_10','Symptom_11','Symptom_12','Symptom_13','Symptom_14','Symptom_15','Symptom_16'],axis=1)
+# df1.fillna('0',inplace = True)
 
-start_column_name = 'New_Symptom_1'
-if start_column_name in df1.columns:
-    start_column_index = df1.columns.get_loc(start_column_name)
+# start_column_name = 'New_Symptom_1'
+# if start_column_name in df1.columns:
+#     start_column_index = df1.columns.get_loc(start_column_name)
 
-    # Custom function to join string elements from the specified column onwards
-    def join_strings_from_column(row, start_index):
-        row = list(map(str, row))  # Convert all elements to strings
-        return ' '.join(row[start_index:])
+#     # Custom function to join string elements from the specified column onwards
+#     def join_strings_from_column(row, start_index):
+#         row = list(map(str, row))  # Convert all elements to strings
+#         return ' '.join(row[start_index:])
 
-    # Apply the custom function to create a new column 'Concatenated'
-    df1['Symptoms'] = df1.apply(join_strings_from_column, args=(start_column_index,), axis=1)
-else:
-    print(f"Column '{start_column_name}' not found in df1")
+#     # Apply the custom function to create a new column 'Concatenated'
+#     df1['Symptoms'] = df1.apply(join_strings_from_column, args=(start_column_index,), axis=1)
+# else:
+#     print(f"Column '{start_column_name}' not found in df1")
 
-df1 = df1.drop(['New_Symptom_1','New_Symptom_2','New_Symptom_3','New_Symptom_4','New_Symptom_5','New_Symptom_6','New_Symptom_7','New_Symptom_8','New_Symptom_9','New_Symptom_10','New_Symptom_11','New_Symptom_12','New_Symptom_13','New_Symptom_14','New_Symptom_15','New_Symptom_16','Symptom_17'],axis=1)
+# df1 = df1.drop(['New_Symptom_1','New_Symptom_2','New_Symptom_3','New_Symptom_4','New_Symptom_5','New_Symptom_6','New_Symptom_7','New_Symptom_8','New_Symptom_9','New_Symptom_10','New_Symptom_11','New_Symptom_12','New_Symptom_13','New_Symptom_14','New_Symptom_15','New_Symptom_16','Symptom_17'],axis=1)
 
 def remove_words(text, words_to_remove):
     words = text.split()
@@ -55,9 +54,9 @@ def remove_words(text, words_to_remove):
 words_to_remove = ['0']
 
 # Apply the custom function to the 'Text' column
-df1['Symptoms'] = df1['Symptoms'].apply(lambda text: remove_words(text, words_to_remove))
+# df1['Symptoms'] = df1['Symptoms'].apply(lambda text: remove_words(text, words_to_remove))
 
-df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
+# df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
 
 
 #remove punctuation
@@ -85,30 +84,30 @@ def remove_stopwords(input_str):
       cleaned_list.append(word)
   return cleaned_list
 
-new_train_df = []
-for text in df['text'].values:
-  new_str = remove_punctuation(text)
-  new_str2 = remove_digits(new_str)
-  new_str3 = tokenize(new_str2)
-  str_list = remove_stopwords(new_str3)
-  new_train_df.append(str_list)
+# new_train_df = []
+# for text in df['text'].values:
+#   new_str = remove_punctuation(text)
+#   new_str2 = remove_digits(new_str)
+#   new_str3 = tokenize(new_str2)
+#   str_list = remove_stopwords(new_str3)
+#   new_train_df.append(str_list)
 
-final_train_df = [[" ".join(inner)] for inner in new_train_df]
+# final_train_df = [[" ".join(inner)] for inner in new_train_df]
 
-df['text'] = [value[0] for value in final_train_df]
+# df['text'] = [value[0] for value in final_train_df]
 
-df1 = df1.rename(columns={'Disease': 'label', 'Symptoms': 'text'})
+# df1 = df1.rename(columns={'Disease': 'label', 'Symptoms': 'text'})
 
-appended_df = pd.concat([df, df1], ignore_index=True)
+# appended_df = pd.concat([df, df1], ignore_index=True)
 
 
 model = make_pipeline(TfidfVectorizer(),MultinomialNB())
 
-from sklearn.model_selection import train_test_split
-X = appended_df['text']
-y = appended_df['label']
-X_train,X_test,y_train,y_test = train_test_split(X,y,test_size = 0.2,random_state = 42)
-model.fit(X_train,y_train)
+# from sklearn.model_selection import train_test_split
+# X = appended_df['text']
+# y = appended_df['label']
+# X_train,X_test,y_train,y_test = train_test_split(X,y,test_size = 0.2,random_state = 42)
+# model.fit(X_train,y_train)
 
 input_str = "" #input goes here
 
